@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">btleplugex</string>
+    <string name="ble_not_supported">BLE Not Supported on this device</string>
+</resources>
