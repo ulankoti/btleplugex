@@ -6,6 +6,7 @@ use crate::connect_disconnect::connect_disconnect;
 use crate::discover_services_characteristics::services_characteristics;
 use crate::MYRUNTIME;
 use crate::start_stop::scan_start_stop;
+use crate::subscribe_notifications::subscribe;
 use jni::{JNIEnv, JavaVM};
 use log::{debug, info, error, LevelFilter};
 use std::os::raw::c_void;
@@ -100,4 +101,22 @@ pub extern "system" fn Java_com_example_btleplug_servicesCharacteristics(_env: J
     th.join().unwrap();
 
     debug!("Exiting btleplugex services_characteristics()");
+}
+
+#[no_mangle]
+pub extern "system" fn Java_com_example_btleplug_subscribe(_env: JNIEnv) {
+    debug!("Entered btleplugex subscribe()");
+    let th = thread::Builder::new()
+        .name(String::from("subscribe thread"))
+        .spawn_attach(move || {
+            match MYRUNTIME.block_on(async { subscribe().await }) {
+                Ok(_) => { info!("subscribe() returned success");},
+                Err(e) => {error!("subscribe() returned error: {:?}", e)}
+            }
+            debug!("exiting thread: {:?}", thread::current().name());
+    }).unwrap();
+
+    th.join().unwrap();
+
+    debug!("Exiting btleplugex subscribe()");
 }

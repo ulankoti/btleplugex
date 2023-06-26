@@ -21,5 +21,10 @@ async fn main() {
         btleplugex::discover_services_characteristics::services_characteristics().await.unwrap();
     }
 
+    for i in 1..100 {
+        debug!("execute subscribe() {:?}th time", i);
+        btleplugex::subscribe_notifications::subscribe().await.unwrap();
+    }
+
     debug!("callme end");
 }

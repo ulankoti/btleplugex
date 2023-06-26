@@ -199,5 +199,10 @@ class MainActivity : ComponentActivity(), Runnable {
             Log.d(TAG, "run() calling servicesCharacteristics() method ${i} time")
             btleplug?.servicesCharacteristics()
         }
+
+        for (i in 1 ..100) {
+            Log.d(TAG,"run() calling subscribe() method ${i} time")
+            btleplug?.subscribe()
+        }
     }
 }

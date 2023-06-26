@@ -4,6 +4,7 @@ pub mod connect_disconnect;
 pub mod discover_adapters_peripherals;
 pub mod discover_services_characteristics;
 pub mod start_stop;
+pub mod subscribe_notifications;
 pub mod subscribe_notify_characteristic;
 
 use lazy_static::lazy_static;
