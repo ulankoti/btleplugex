@@ -90,6 +90,9 @@ class MainActivity : ComponentActivity(), Runnable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        btleplug = btleplug()
+
         if (!packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show()
             finish()
@@ -179,8 +182,12 @@ class MainActivity : ComponentActivity(), Runnable {
     }
 
     override fun run() {
-        Log.d(TAG, "run() calling btleplug.run() method")
-        btleplug = btleplug()
-        btleplug?.run()
+        //Log.d(TAG, "run() calling btleplug.run() method")
+        //btleplug?.run()
+
+        for (i in 1..100) {
+            Log.d(TAG, "run() calling scanStartStop() method ${i} time")
+            btleplug?.scanStartStop()
+        }
     }
 }

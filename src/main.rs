@@ -1,9 +1,14 @@
 use log::{debug};
 use log4rs;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     debug!("callme start");
     log4rs::init_file("logging_config.yaml", Default::default()).unwrap();
-    btleplugex::callme();
+
+    for i in 1..100 {
+        debug!("execute scan_start_stop() {:?}th time", i);
+        btleplugex::start_stop::scan_start_stop().await.unwrap();
+    }
     debug!("callme end");
 }

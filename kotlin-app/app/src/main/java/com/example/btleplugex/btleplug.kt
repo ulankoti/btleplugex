@@ -5,6 +5,7 @@ import android.util.Log
 class btleplug {
     private val TAG = "btleplug"
     external fun run()
+    external fun scanStartStop()
     init {
         try {
             System.loadLibrary("btleplugex")

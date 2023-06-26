@@ -1,6 +1,7 @@
 pub mod abi;
 pub mod builder;
 pub mod discover_adapters_peripherals;
+pub mod start_stop;
 pub mod subscribe_notify_characteristic;
 
 use lazy_static::lazy_static;

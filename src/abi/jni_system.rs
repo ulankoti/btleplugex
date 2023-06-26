@@ -1,10 +1,13 @@
 use android_logger::{Config/*, FilterBuilder*/};
 //use btleplug::platform::init;
-use crate::builder::{Builder, RuntimeVM as _};
+use crate::builder::{Builder, RuntimeVM as _, thread::SpawnAttach as _};
 use crate::callme;
+use crate::MYRUNTIME;
+use crate::start_stop::scan_start_stop;
 use jni::{JNIEnv, JavaVM};
 use log::{debug, info, error, LevelFilter};
 use std::os::raw::c_void;
+use std::thread;
 
 #[no_mangle]
 pub extern "system" fn JNI_OnLoad(vm: JavaVM, _: *mut c_void) -> jni::sys::jint {
@@ -41,4 +44,22 @@ pub extern "system" fn Java_com_example_btleplug_run(_env: JNIEnv) {
     debug!("btleplug example run entry");
     callme();
     debug!("btleplug example run exit");
+}
+
+#[no_mangle]
+pub extern "system" fn Java_com_example_btleplug_scanStartStop(_env: JNIEnv) {
+    debug!("Entered btleplugex scan_start_stop()");
+    let th = thread::Builder::new()
+        .name(String::from("scan_start_stop thread"))
+        .spawn_attach(move || {
+            match MYRUNTIME.block_on(async { scan_start_stop().await }) {
+                Ok(_) => { info!("scan_start_stop() returned success");},
+                Err(e) => {error!("scan_start_stop() returned error: {:?}", e)}
+            }
+            debug!("exiting thread: {:?}", thread::current().name());
+    }).unwrap();
+
+    th.join().unwrap();
+
+    debug!("Exiting btleplugex scan_start_stop()");
 }
