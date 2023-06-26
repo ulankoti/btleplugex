@@ -3,6 +3,7 @@ use android_logger::{Config/*, FilterBuilder*/};
 use crate::builder::{Builder, RuntimeVM as _, thread::SpawnAttach as _};
 use crate::callme;
 use crate::connect_disconnect::connect_disconnect;
+use crate::discover_services_characteristics::services_characteristics;
 use crate::MYRUNTIME;
 use crate::start_stop::scan_start_stop;
 use jni::{JNIEnv, JavaVM};
@@ -81,4 +82,22 @@ pub extern "system" fn Java_com_example_btleplug_connectDisconnect(_env: JNIEnv)
     th.join().unwrap();
 
     debug!("Exiting btleplugex connect_disconnect()");
+}
+
+#[no_mangle]
+pub extern "system" fn Java_com_example_btleplug_servicesCharacteristics(_env: JNIEnv) {
+    debug!("Entered btleplugex services_characteristics()");
+    let th = thread::Builder::new()
+        .name(String::from("services_characteristics thread"))
+        .spawn_attach(move || {
+            match MYRUNTIME.block_on(async { services_characteristics().await }) {
+                Ok(_) => { info!("services_characteristics() returned success");},
+                Err(e) => {error!("services_characteristics() returned error: {:?}", e)}
+            }
+            debug!("exiting thread: {:?}", thread::current().name());
+    }).unwrap();
+
+    th.join().unwrap();
+
+    debug!("Exiting btleplugex services_characteristics()");
 }

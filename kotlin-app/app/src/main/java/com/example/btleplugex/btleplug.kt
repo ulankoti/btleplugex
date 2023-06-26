@@ -7,6 +7,7 @@ class btleplug {
     external fun run()
     external fun scanStartStop()
     external fun connectDisconnect()
+    external fun servicesCharacteristics()
     init {
         try {
             System.loadLibrary("btleplugex")

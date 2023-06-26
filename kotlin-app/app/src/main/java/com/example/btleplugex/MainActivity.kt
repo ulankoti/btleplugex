@@ -194,5 +194,10 @@ class MainActivity : ComponentActivity(), Runnable {
             Log.d(TAG,"run() calling connectDisconnect() method ${i} time")
             btleplug?.connectDisconnect()
         }
+
+        for (i in 1..100) {
+            Log.d(TAG, "run() calling servicesCharacteristics() method ${i} time")
+            btleplug?.servicesCharacteristics()
+        }
     }
 }

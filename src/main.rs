@@ -15,5 +15,11 @@ async fn main() {
         debug!("execute connect_disconnect() {:?}th time", i);
         btleplugex::connect_disconnect::connect_disconnect().await.unwrap();
     }
+
+    for i in 1..100 {
+        debug!("execute services_characteristics() {:?}th time", i);
+        btleplugex::discover_services_characteristics::services_characteristics().await.unwrap();
+    }
+
     debug!("callme end");
 }
