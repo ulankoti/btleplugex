@@ -2,6 +2,7 @@ use android_logger::{Config/*, FilterBuilder*/};
 //use btleplug::platform::init;
 use crate::builder::{Builder, RuntimeVM as _, thread::SpawnAttach as _};
 use crate::callme;
+use crate::connect_disconnect::connect_disconnect;
 use crate::MYRUNTIME;
 use crate::start_stop::scan_start_stop;
 use jni::{JNIEnv, JavaVM};
@@ -62,4 +63,22 @@ pub extern "system" fn Java_com_example_btleplug_scanStartStop(_env: JNIEnv) {
     th.join().unwrap();
 
     debug!("Exiting btleplugex scan_start_stop()");
+}
+
+#[no_mangle]
+pub extern "system" fn Java_com_example_btleplug_connectDisconnect(_env: JNIEnv) {
+    debug!("Entered btleplugex connect_disconnect()");
+    let th = thread::Builder::new()
+        .name(String::from("connect_disconnect thread"))
+        .spawn_attach(move || {
+            match MYRUNTIME.block_on(async { connect_disconnect().await }) {
+                Ok(_) => { info!("connect_disconnect() returned success");},
+                Err(e) => {error!("connect_disconnect() returned error: {:?}", e)}
+            }
+            debug!("exiting thread: {:?}", thread::current().name());
+    }).unwrap();
+
+    th.join().unwrap();
+
+    debug!("Exiting btleplugex connect_disconnect()");
 }

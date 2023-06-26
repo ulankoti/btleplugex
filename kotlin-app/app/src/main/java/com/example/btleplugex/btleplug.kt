@@ -6,6 +6,7 @@ class btleplug {
     private val TAG = "btleplug"
     external fun run()
     external fun scanStartStop()
+    external fun connectDisconnect()
     init {
         try {
             System.loadLibrary("btleplugex")
