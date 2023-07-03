@@ -11,6 +11,8 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResult
@@ -20,7 +22,7 @@ import androidx.core.content.ContextCompat
 import com.example.btleplug
 
 class MainActivity : ComponentActivity(), Runnable {
-    private val TAG = "btleplugex";
+    private val mTAG = "btleplugex"
     private var isBluetoothON: Boolean = false
     private var isBtOnRequestRejected: Boolean = false
     private var mPermissionRequestLauncher: ActivityResultLauncher<Array<String>>? = null
@@ -30,7 +32,13 @@ class MainActivity : ComponentActivity(), Runnable {
     private var isBleConnectPermissionGranted: Boolean = false
     private var isBleFineLocationPermissionGranted: Boolean = false
     private var isBleCoarseLocationPermissionGranted: Boolean = false
-    private var btleplug: btleplug? = null
+    private lateinit var mScanButton: Button
+    private lateinit var mConnectButton: Button
+    private lateinit var mServiceCharacteristicsButton: Button
+    private lateinit var mSubscribeButton: Button
+    private lateinit var btleplug: btleplug
+    private lateinit var mActiveButton: Button
+    private val maxCounter = 100
 
     private fun requestPermissions() {
         val permissionRequest: MutableList<String> = ArrayList()
@@ -81,22 +89,44 @@ class MainActivity : ComponentActivity(), Runnable {
         }
         if (permissionRequest.isNotEmpty()) {
             Log.d(
-                TAG, "permissions required: " +
+                mTAG, "permissions required: " +
                         permissionRequest.toTypedArray().contentToString()
             )
             mPermissionRequestLauncher!!.launch(permissionRequest.toTypedArray())
         }
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         btleplug = btleplug()
+        setContentView(R.layout.layout)
+
+        mScanButton = findViewById(R.id.scanButton)
+        mConnectButton = findViewById(R.id.connectButton)
+        mServiceCharacteristicsButton = findViewById(R.id.characteristicsButton)
+        mSubscribeButton = findViewById(R.id.subscribeButton)
+
+        mScanButton.setOnClickListener {
+            mActiveButton = mScanButton
+            Thread(this).start()
+        }
+        mConnectButton.setOnClickListener {
+            mActiveButton = mConnectButton
+            Thread(this).start()
+        }
+        mServiceCharacteristicsButton.setOnClickListener {
+            mActiveButton = mServiceCharacteristicsButton
+            Thread(this).start()
+        }
+        mSubscribeButton.setOnClickListener {
+            mActiveButton = mSubscribeButton
+            Thread(this).start()
+        }
 
         if (!packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show()
             finish()
         }
+
         mPermissionRequestLauncher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { result: Map<String, Boolean> ->
@@ -129,6 +159,7 @@ class MainActivity : ComponentActivity(), Runnable {
         requestPermissions()
         registerReceiver(mBCReceiver, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
     }
+
     private val mBCReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (BluetoothAdapter.ACTION_STATE_CHANGED == intent.action) {
@@ -155,7 +186,7 @@ class MainActivity : ComponentActivity(), Runnable {
 
     override fun onStart() {
         super.onStart()
-        Log.d(TAG, "onStart()")
+        Log.d(mTAG, "onStart()")
         if (getSystemService(BluetoothManager::class.java).adapter.isEnabled) {
             isBluetoothON = true
         }
@@ -163,46 +194,89 @@ class MainActivity : ComponentActivity(), Runnable {
 
     override fun onResume() {
         super.onResume()
-        Log.d(TAG, "onResume()")
+        Log.d(mTAG, "onResume()")
         if (!isBluetoothON && !isBtOnRequestRejected) {
             // BT is OFF and BT ON dialog not denied, launch dialog
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || isBleConnectPermissionGranted) {
                 val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
                 activityResultLauncher.launch(intent)
             }
-        } else {
-            Thread(this).start()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG, "onDestroy()")
+        Log.d(mTAG, "onDestroy()")
         unregisterReceiver(mBCReceiver)
     }
 
     override fun run() {
-        //Log.d(TAG, "run() calling btleplug.run() method")
-        //btleplug?.run()
+        val startText: TextView = findViewById(R.id.starttextView)
+        val connectText: TextView = findViewById(R.id.connecttextView)
+        val servicesText: TextView = findViewById(R.id.characteristicstextView)
+        val subscribeText: TextView = findViewById(R.id.subscribetextView)
 
-        for (i in 1..100) {
-            Log.d(TAG, "run() calling scanStartStop() method ${i} time")
-            btleplug?.scanStartStop()
-        }
-
-        for (i in 1..100) {
-            Log.d(TAG,"run() calling connectDisconnect() method ${i} time")
-            btleplug?.connectDisconnect()
-        }
-
-        for (i in 1..100) {
-            Log.d(TAG, "run() calling servicesCharacteristics() method ${i} time")
-            btleplug?.servicesCharacteristics()
-        }
-
-        for (i in 1 ..100) {
-            Log.d(TAG,"run() calling subscribe() method ${i} time")
-            btleplug?.subscribe()
+        when (mActiveButton) {
+            mScanButton -> {
+                for (i in 1..maxCounter) {
+                    Log.d(mTAG, "run() calling btleplug.scanStartStop() method $i time")
+                    runOnUiThread {
+                        mScanButton.isEnabled = false
+                        startText.text = getString(R.string.scan_start_stop_running, i)
+                    }
+                    btleplug.scanStartStop()
+                }
+                runOnUiThread {
+                    mScanButton.isEnabled = true
+                    startText.text = getString(R.string.scan_start_stop_completed)
+                }
+            }
+            mConnectButton -> {
+                for (i in 1..maxCounter) {
+                    Log.d(mTAG, "run() calling btleplug.connectDisconnect() method $i time")
+                    runOnUiThread {
+                        mConnectButton.isEnabled = false
+                        connectText.text = getString(R.string.connect_disconnect_running, i)
+                    }
+                    btleplug.connectDisconnect()
+                }
+                runOnUiThread {
+                    mConnectButton.isEnabled = true
+                    connectText.text = getString(R.string.connect_disconnect_completed)
+                }
+            }
+            mServiceCharacteristicsButton -> {
+                for (i in 1..maxCounter) {
+                    Log.d(mTAG, "run() calling btleplug.servicesCharacteristics() method $i time")
+                    runOnUiThread {
+                        mServiceCharacteristicsButton.isEnabled = false
+                        servicesText.text = getString(R.string.services_characteristics_running, i)
+                    }
+                    btleplug.servicesCharacteristics()
+                }
+                runOnUiThread {
+                    mServiceCharacteristicsButton.isEnabled = true
+                    servicesText.text = getString(R.string.services_characteristics_completed)
+                }
+            }
+            mSubscribeButton -> {
+                for (i in 1..maxCounter) {
+                    Log.d(mTAG, "run() calling btleplug.subscribe() method $i time")
+                    runOnUiThread {
+                        mSubscribeButton.isEnabled = false
+                        subscribeText.text = getString(R.string.subscribe_running, i)
+                    }
+                    btleplug.subscribe()
+                }
+                runOnUiThread {
+                    mSubscribeButton.isEnabled = true
+                    subscribeText.text = getString(R.string.subscribe_completed)
+                }
+            }
+            else -> {
+                Log.d(mTAG, "run() calling btleplug.run() method")
+                btleplug.run()
+            }
         }
     }
 }

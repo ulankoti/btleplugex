@@ -1,4 +1,17 @@
 <resources>
-    <string name="app_name">btleplugex</string>
+    <string name="app_name">btleplug Stress Test Example</string>
     <string name="ble_not_supported">BLE Not Supported on this device</string>
+    <string name="connect_disconnect">Connect Disconnect Test</string>
+    <string name="start_stop">Scan Start Stop Test</string>
+    <string name="characteristics">Discover Characteristics Test</string>
+    <string name="subscribe">Subscribe Test</string>
+    <string name="scan_start_stop_completed">Scan Start Stop test completed</string>
+    <string name="scan_start_stop_running">Executing Scan Start Stop test %1$d time</string>
+    <string name="connect_disconnect_running">Executing Connect Disconnect test %1$d time"</string>
+    <string name="connect_disconnect_completed">Connect Disconnect test completed</string>
+    <string name="services_characteristics_running">Executing Characteristics test %1$d time</string>
+    <string name="services_characteristics_completed">Discover Services Characteristics test completed</string>
+    <string name="subscribe_running">Executing Subscribe test %1$d time</string>
+    <string name="subscribe_completed">Subscribe test completed</string>
+    <string name="button">Button</string>
 </resources>

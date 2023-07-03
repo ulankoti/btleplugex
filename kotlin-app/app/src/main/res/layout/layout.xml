@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:textAlignment="gravity"
+    tools:context=".MainActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:title="@string/app_name"
+        android:titleTextColor="@color/white"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/scanButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="@string/start_stop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/starttextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textAlignment="center"
+        app:layout_constraintTop_toBottomOf="@+id/scanButton"
+        tools:ignore="MissingConstraints"/>
+
+    <Button
+        android:id="@+id/connectButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="@string/connect_disconnect"
+        app:layout_constraintTop_toBottomOf="@+id/starttextView"
+        app:layout_constraintEnd_toEndOf="@id/starttextView"
+        app:layout_constraintStart_toStartOf="@id/starttextView"
+        app:layout_constraintTop_toTopOf="@id/starttextView"/>
+
+    <TextView
+        android:id="@+id/connecttextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textAlignment="center"
+        app:layout_constraintTop_toBottomOf="@+id/connectButton"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/characteristicsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="@string/characteristics"
+        app:layout_constraintTop_toBottomOf="@+id/connecttextView"
+        app:layout_constraintEnd_toEndOf="@id/connecttextView"
+        app:layout_constraintStart_toStartOf="@id/connecttextView"
+        app:layout_constraintTop_toTopOf="@id/connecttextView"/>
+
+    <TextView
+        android:id="@+id/characteristicstextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textAlignment="center"
+        app:layout_constraintTop_toBottomOf="@+id/characteristicsButton"
+        tools:ignore="MissingConstraints"/>
+
+    <Button
+        android:id="@+id/subscribeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="@string/subscribe"
+        app:layout_constraintTop_toBottomOf="@+id/characteristicstextView"
+        app:layout_constraintEnd_toEndOf="@id/characteristicstextView"
+        app:layout_constraintStart_toStartOf="@id/characteristicstextView"
+        app:layout_constraintTop_toTopOf="@id/characteristicstextView" />
+
+    <TextView
+        android:id="@+id/subscribetextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textAlignment="center"
+        app:layout_constraintTop_toBottomOf="@+id/subscribeButton"
+        tools:ignore="MissingConstraints"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
